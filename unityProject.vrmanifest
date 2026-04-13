@@ -1,0 +1,16 @@
+{
+  "source": "Unity",
+  "applications": [
+    {
+      "app_key": "application.generated.unity.crepraysunity6.exe",
+      "launch_type": "url",
+      "url": "steam://launch/",
+      "action_manifest_path": "C:\\Users\\mauda\\maud\\Uni Passau\\Masterthesis\\Unity\\CrepuscularRays\\Assets\\StreamingAssets\\SteamVR\\actions.json",
+      "strings": {
+        "en_us": {
+          "name": "CrepRaysUnity6 [Testing]"
+        }
+      }
+    }
+  ]
+}

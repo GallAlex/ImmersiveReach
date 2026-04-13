@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: c1bbfafbde15c854681023b9e01e12dd
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 66207
+  packageName: Let's Try Assets
+  packageVersion: 3.0
+  assetPath: Assets/UnityTechnologies/Standard Assets/Utility/LerpControlledBob.cs
+  uploadId: 680588

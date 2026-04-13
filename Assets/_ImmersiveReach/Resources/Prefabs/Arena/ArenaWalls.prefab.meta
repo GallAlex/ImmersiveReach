@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: fe8fa948a12001441beaf5aa01a6fd3f
+timeCreated: 1466161329
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 66207
+  packageName: Let's Try Assets
+  packageVersion: 3.0
+  assetPath: Assets/_CrepuscularRays/Resources/Prefabs/Arena/ArenaWalls.prefab
+  uploadId: 680588
