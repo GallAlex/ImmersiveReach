@@ -15,6 +15,8 @@ using System.Linq;
 public class AnatomicalAccessibilityExploration
 {
     public Transform instrument;
+    public Transform controller;
+
     public int instrumentSamplingPoints = 5;
     public float maxHitDistance = 50f;
     public LayerMask layerMask;
@@ -355,7 +357,18 @@ public class AnatomicalAccessibilityExploration
             instrumentCone.GetComponent<Renderer>().enabled = displayInstrumentCone;
             if (displayInstrumentCone && raycastResultsAvailable)
             {
-                InstrumentHelper.UpdateConeReachability(instrumentCone, instrument, instrumentBounds.size.z, rayOrigins, rotationAngle);
+                // Check tip
+                float exactLocalTipZ = InstrumentHelper.GetLocalTipZ(instrument);
+
+                InstrumentHelper.UpdateConeReachability(
+                    instrumentCone,
+                    instrument,
+                    exactLocalTipZ,
+                    instrumentBounds.size.z,
+                    rayOrigins,
+                    rotationAngle
+                );
+
             }
         }
     }
@@ -445,9 +458,10 @@ public class AnatomicalAccessibilityExploration
             }
 
             // create a duplicate of the instrument for the FP camera
-            cameraInstrumentDuplicate = UnityEngine.Object.Instantiate(instrument.gameObject, cameraTransform.position + GameManager.cameraInstrumentOffset, cameraTransform.rotation);
+            // cameraInstrumentDuplicate = UnityEngine.Object.Instantiate(instrument.gameObject, cameraTransform.position + GameManager.cameraInstrumentOffset, cameraTransform.rotation);
+            cameraInstrumentDuplicate = UnityEngine.Object.Instantiate(instrument.gameObject, controller.position, controller.rotation);
             cameraInstrumentDuplicate.name = "CameraInstrument";
-            cameraInstrumentDuplicate.transform.parent = cameraTransform;
+            cameraInstrumentDuplicate.transform.parent = controller;
             cameraInstrumentDuplicate.GetComponentInChildren<MeshCollider>(false).enabled = false;
             // Camera instrument is a bit transparent, and yellow to differentiate it from the instrument placed to cast rays
             // Load the material from the Resources folder
@@ -621,7 +635,19 @@ public class AnatomicalAccessibilityExploration
         if (displayInstrumentCone)
         {
             instrumentCone.GetComponent<Renderer>().enabled = true;
-            InstrumentHelper.UpdateConeReachability(instrumentCone, instrument, instrumentBounds.size.z, rayOrigins, rotationAngle);
+
+            // Check tip
+            float exactLocalTipZ = InstrumentHelper.GetLocalTipZ(instrument);
+
+            InstrumentHelper.UpdateConeReachability(
+                instrumentCone,
+                instrument,
+                exactLocalTipZ,
+                instrumentBounds.size.z,
+                rayOrigins,
+                rotationAngle
+            );
+
         }
         if (displayInstrumentObject)
         {

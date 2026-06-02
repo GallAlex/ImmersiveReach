@@ -5,11 +5,16 @@
 /[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/
+/[Ss]amples/
 /[Bb]uild/
 /[Bb]uilds/
 [Ee]xport/
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
+
+# Sample and Recovery Folder
+/Assets/_Recovery/
+/Assets/Samples/
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data

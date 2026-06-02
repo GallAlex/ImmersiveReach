@@ -184,7 +184,9 @@ public class InstrumentPlacementPlanning
             instrumentCone.GetComponent<Renderer>().enabled = displayInstrumentCone;
             if (displayInstrumentCone && raycastResultsAvailable)
             {
-                InstrumentHelper.UpdateConeReachability(instrumentCone, instrument, instrumentBounds.size.z, instrumentSamplePoints, rotationAngle);
+                // Check tip
+                float exactLocalTipZ = InstrumentHelper.GetLocalTipZ(instrument);
+                InstrumentHelper.UpdateConeReachability(instrumentCone, instrument, exactLocalTipZ, instrumentBounds.size.z, instrumentSamplePoints, rotationAngle);
             }
         }
     }
@@ -462,7 +464,18 @@ public class InstrumentPlacementPlanning
         if (displayInstrumentCone)
         {
             instrumentCone.GetComponent<Renderer>().enabled = true;
-            InstrumentHelper.UpdateConeReachability(instrumentCone, instrument, instrumentBounds.size.z, instrumentSamplePoints, rotationAngle);
+            // Check tip
+            float exactLocalTipZ = InstrumentHelper.GetLocalTipZ(instrument);
+
+            InstrumentHelper.UpdateConeReachability(
+                instrumentCone,
+                instrument,
+                exactLocalTipZ,
+                instrumentBounds.size.z,
+                instrumentSamplePoints,
+                rotationAngle
+            );
+
         }
         if (displayInstrumentObject)
         {

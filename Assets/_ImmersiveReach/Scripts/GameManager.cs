@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Objects selection")]
     public Transform instrument;
+    public Transform controller;
     public GameObject objectStudied;
     public LayerMask layerMask;
     [Header("Instrument sampling, changeable at runtime")]
@@ -179,6 +180,7 @@ public class GameManager : MonoBehaviour
         if (script is AnatomicalAccessibilityExploration anatomicalAccessibilityExploration)
         {
             anatomicalAccessibilityExploration.instrument = instrument;
+            anatomicalAccessibilityExploration.controller = controller;
             anatomicalAccessibilityExploration.instrumentSamplingPoints = instrumentSamplingPoints;
             anatomicalAccessibilityExploration.maxHitDistance = maxHitDistance;
             anatomicalAccessibilityExploration.layerMask = layerMask;

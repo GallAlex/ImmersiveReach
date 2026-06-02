@@ -274,7 +274,7 @@ public static class InstrumentHelper
         meshRenderer.material = material;
         Mesh mesh = new();
         cone.AddComponent<MeshFilter>().mesh = mesh;
-        Quaternion instrumentOrientation = Quaternion.Euler(90, 0, 0);
+        //Quaternion instrumentOrientation = Quaternion.Euler(90, 0, 0);
 
         List<Vector3> vertices = new();
         List<Vector2> uvs = new();
@@ -283,29 +283,27 @@ public static class InstrumentHelper
         float angle = 0f;
 
         // Cone tip
-        Vector3 pos = new(0f, height, 0f);
-        vertices.Add(instrumentOrientation * pos);
-        uvs.Add(new Vector2(0.5f, 1f)); // Tip is at the center top of the UV map
-        
+        vertices.Add(Vector3.zero);
+        uvs.Add(new Vector2(0.5f, 1f));
+
         float radius = height * Mathf.Tan(coneAngle * Mathf.Deg2Rad);
-        pos.y = 0f;
+        
+
         for (int i = 0; i < segments; ++i)
         {
-            pos.x = radius * Mathf.Cos(angle);
-            pos.z = radius * Mathf.Sin(angle);
-            vertices.Add(instrumentOrientation * pos);
-            
-            float u = (float)i / segments; // Spread UVs evenly around the base
+            float x = radius * Mathf.Cos(angle);
+            float y = radius * Mathf.Sin(angle);
+            vertices.Add(new Vector3(x, y, height));
+
+            float u = (float)i / segments; //Spread UVs evenly around the base
             uvs.Add(new Vector2(u, 0f));
 
             angle -= angleAmount;
         }
 
-        // Add last base vertex (duplicate of the first base vertex, but with u = 1.0)
-        pos.x = radius * Mathf.Cos(0);
-        pos.z = radius * Mathf.Sin(0);
-        vertices.Add(instrumentOrientation * pos);
-        uvs.Add(new Vector2(1f, 0f)); // duplicate UV at the seam
+        // Add last base vertex duplicate for a clean UV texture seam map closure
+        vertices.Add(new Vector3(radius * Mathf.Cos(0), radius * Mathf.Sin(0), -height));
+        uvs.Add(new Vector2(1f, 0f));
         int lastVertexIndex = vertices.Count - 1;
 
         mesh.vertices = vertices.ToArray();
@@ -315,12 +313,12 @@ public static class InstrumentHelper
         for (int i = 1; i < segments; ++i)
         {
             triangles.Add(0); // Cone tip
-            triangles.Add(i);
             triangles.Add(i + 1);
+            triangles.Add(i);
         }
         triangles.Add(0);
+        triangles.Add(1);
         triangles.Add(segments);
-        triangles.Add(lastVertexIndex);
 
         mesh.triangles = triangles.ToArray();
         mesh.RecalculateNormals();
@@ -329,10 +327,14 @@ public static class InstrumentHelper
     }
 
     // Updates the instrument cone : position, rotation and reachability coloring
-    public static void UpdateConeReachability(GameObject instrumentCone, Transform instrumentTransform, float coneHeight, NativeArray<InstrumentSamplePoint> instrumentSamplePoints, float rotationAngle)
+    public static void UpdateConeReachability(GameObject instrumentCone, Transform instrumentTransform, float exactLocalTipZ, float coneHeight, NativeArray<InstrumentSamplePoint> instrumentSamplePoints, float rotationAngle)
     {
-        instrumentCone.transform.position = instrumentTransform.position - instrumentTransform.TransformDirection(Vector3.forward) * coneHeight;
-        instrumentCone.transform.rotation = instrumentTransform.rotation;
+        // Mathematically translate from the tracking handle pivot directly forward to the target tip
+        Vector3 exactShovelTipPosition = instrumentTransform.TransformPoint(new Vector3(0f, 0f, exactLocalTipZ));
+
+        instrumentCone.transform.position = exactShovelTipPosition;
+        instrumentCone.transform.rotation = instrumentTransform.rotation * Quaternion.Euler(0f, 180f, 0f);
+
         bool[] vertexReachability = ComputeInstrumentConeReachability(instrumentCone, instrumentSamplePoints, coneHeight, rotationAngle);
         TextureColoringHelper.ColorCone(instrumentCone, vertexReachability);
     }
@@ -424,4 +426,34 @@ public static class InstrumentHelper
 
         return vertexReachability;
     }
+
+    /// <summary>
+    /// Calculates the exact local Z offset of the instrument's tip relative to the rootobjects pivot.
+    /// Handles both explicit transform marking and programmatic mesh boundary detection.
+    /// </summary>
+    public static float GetLocalTipZ(Transform instrumentTransform)
+    {
+        // Search for an explicitly placed user-defined anchor
+        Transform tipAnchor = instrumentTransform.GetComponentsInChildren<Transform>()
+            .FirstOrDefault(t => t.name == "TipAnchor");
+
+        if (tipAnchor != null)
+        {
+            // Transform the global anchor position back into the instrument parent space
+            return instrumentTransform.InverseTransformPoint(tipAnchor.position).z;
+        }
+
+        // If no Tip defined: Dynamically parse the structural mesh filter geometry boundaries
+        MeshFilter meshFilter = instrumentTransform.GetComponentInChildren<MeshFilter>();
+        if (meshFilter != null && meshFilter.sharedMesh != null)
+        {
+            Vector3 worldMaxBoundsPoint = meshFilter.transform.TransformPoint(meshFilter.sharedMesh.bounds.max);
+            Vector3 localMaxInRoot = instrumentTransform.InverseTransformPoint(worldMaxBoundsPoint);
+            return localMaxInRoot.z;
+        }
+
+        // Nothing caluclated
+        return 0f;
+    }
+
 }
