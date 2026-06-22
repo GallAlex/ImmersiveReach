@@ -5,11 +5,14 @@ using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
+using UnityEngine.InputSystem.XR;
 using Debug = UnityEngine.Debug;
 
 public class InstrumentPlacementPlanning
 {
     public Transform instrument;
+    public Transform controller;
+
     public GameObject objectStudied;
     public bool debug = false;
     public LayerMask layerMask;
@@ -24,6 +27,7 @@ public class InstrumentPlacementPlanning
     public bool isActive;
     public ParticleSystem instrumentPointsParticleSystem;
     public int reachabilityPercentage;
+    public Color placementColor = Color.black;
     public bool displayInstrumentObject = true;
     public bool displayInstrumentCone = false;
     public bool displayInstrumentPoints = false;
@@ -304,7 +308,10 @@ public class InstrumentPlacementPlanning
 
     public void Update()
     {
-        Ray ray = camera.ScreenPointToRay(screenCenter);
+        //Ray ray = camera.ScreenPointToRay(screenCenter);
+        // Use controller
+        Ray ray = new Ray(controller.transform.position, controller.transform.forward);
+
         if (Physics.Raycast(ray, out RaycastHit hit, maxHitDistance, layerMask))
         {
             if (raycastObject.colliderId == hit.colliderInstanceID)
@@ -362,7 +369,8 @@ public class InstrumentPlacementPlanning
     private void PositionInstrument()
     {
         // place and rotate the instrument to face the hit point
-        instrument.position = cameraInstrument.transform.position;
+        //instrument.position = cameraInstrument.transform.position;
+        instrument.position = controller.transform.position;
         Vector3 normal = objectHit.point - instrument.position;
         Vector3 instrumentForward = instrument.forward;
         Vector3 axis = Vector3.Cross(instrumentForward, normal);
@@ -425,7 +433,7 @@ public class InstrumentPlacementPlanning
         {
             for (int j = 0; j < textureHeight; ++j)
             {
-                textureColors[i + j * textureWidth] = textureData[i, j] != 0 ? Color.black : initialInstrumentColor;
+                textureColors[i + j * textureWidth] = textureData[i, j] != 0 ? placementColor : initialInstrumentColor;
             }
         }
         raycastObject.SetTexture(textureColors);

@@ -52,6 +52,7 @@ public class GameManager : MonoBehaviour
     public bool drawColors = true;
 
     [Header("Instrument placement planning properties, changeable at runtime")]
+    public Color placementColor = Color.black;
     public int depthLines = 3;
     [Range(1, 100)] public int reachabilityPercentage = 80;
     [Header("Raycasting properties, changeable at runtime")]
@@ -211,6 +212,7 @@ public class GameManager : MonoBehaviour
         else if (script is InstrumentPlacementPlanning instrumentPlacementPlanning)
         {
             instrumentPlacementPlanning.instrument = instrument;
+            instrumentPlacementPlanning.controller = controller;
             instrumentPlacementPlanning.objectStudied = objectStudied;
             instrumentPlacementPlanning.debug = debug;
             instrumentPlacementPlanning.layerMask = layerMask;
@@ -224,6 +226,7 @@ public class GameManager : MonoBehaviour
             instrumentPlacementPlanning.isActive = usageScenario == UsageScenario.InstrumentPlacementPlanning;
             instrumentPlacementPlanning.instrumentPointsParticleSystem = instrumentPointsParticleSystem;
             instrumentPlacementPlanning.reachabilityPercentage = reachabilityPercentage;
+            instrumentPlacementPlanning.placementColor = placementColor;
             instrumentPlacementPlanning.displayInstrumentPoints = displayInstrumentPoints;
             instrumentPlacementPlanning.displayInstrumentObject = displayInstrumentObject;
             instrumentPlacementPlanning.displayInstrumentCone = displayInstrumentCone;
