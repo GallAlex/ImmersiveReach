@@ -48,8 +48,22 @@ The initial version of this framework and its techniques were built upon researc
 
 ### 2. Immersive Reachability Planning for the Excavation of Cultural Heritage Objects
 
-> **Alexander Gall, Anja Heim, Laura Longo, Christoph Heinzl** *Immersive Reachability Planning for the Excavation of Cultural Heritage Objects.* AVI2026.
+> **Alexander Gall, Anja Heim, Laura Longo, Christoph Heinzl** 2026 *Immersive Reachability Planning for the Excavation of Cultural Heritage Objects.* In Proceedings of the 2026 International Conference on Advanced Visual Interfaces (AVI ’26).
 
+```bibtex
+@InProceedings{Gall2026a,
+  author       = {Gall, Alexander and Heim, Anja and Longo, Laura and Heinzl, Christoph},
+  booktitle    = {Proceedings of the 2026 International Conference on Advanced Visual Interfaces},
+  title        = {Immersive Reachability Planning for the Excavation of Cultural Heritage Objects},
+  year         = {2026},
+  month        = June,
+  pages        = {1--5},
+  publisher    = {ACM},
+  series       = {AVI ’26},
+  collection   = {AVI ’26},
+  doi          = {10.1145/3811427.3811471},
+}
+```
 
 ## Contact
 
